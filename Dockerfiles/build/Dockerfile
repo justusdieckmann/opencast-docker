@@ -25,7 +25,7 @@ LABEL maintainer="WWU eLectures team <electures.dev@uni-muenster.de>" \
       org.label-schema.docker.debug="docker exec -it $CONTAINER bash"
 
 ARG repo="https://github.com/opencast/opencast.git"
-ARG branch="develop"
+ARG branch="r/11.x"
 
 ENV ORG_OPENCASTPROJECT_SECURITY_ADMIN_USER="admin" \
     ORG_OPENCASTPROJECT_SECURITY_ADMIN_PASS="opencast" \
@@ -43,9 +43,12 @@ ENV ORG_OPENCASTPROJECT_SECURITY_ADMIN_USER="admin" \
     OPENCAST_GID="800" \
     OPENCAST_BUILD_ASSETS="/docker" \
     FFMPEG_VERSION="latest"
-ENV OPENCAST_SCRIPTS="${OPENCAST_HOME}/docker/scripts" \
+
+ENV OPENCAST_CONFIG="${OPENCAST_HOME}/etc" \
+    OPENCAST_SCRIPTS="${OPENCAST_HOME}/docker/scripts" \
     OPENCAST_SUPPORT="${OPENCAST_HOME}/docker/support" \
-    OPENCAST_CONFIG="${OPENCAST_HOME}/etc" \
+    OPENCAST_STAGE_BASE_HOME="${OPENCAST_HOME}/docker/stage/base" \
+    OPENCAST_STAGE_OUT_HOME="${OPENCAST_HOME}/docker/stage/out" \
     OPENCAST_REPO="${repo}" \
     OPENCAST_BRANCH="${branch}"
 
@@ -78,17 +81,19 @@ RUN apt-get update \
       hunspell-en-gb \
       hunspell-en-us \
       hunspell-en-za \
+      inotify-tools \
       jq \
       netcat-openbsd \
       nfs-common \
       openssl \
+      rsync \
       sox \
       synfig \
       tesseract-ocr \
       tesseract-ocr-eng \
       tzdata \
   \
- && sudo ln -s /usr/local/openjdk-8/bin/* /usr/local/bin/ \
+ && sudo ln -s /usr/local/openjdk*/bin/* /usr/local/bin/ \
   \
  && git clone https://github.com/ncopa/su-exec.git /tmp/su-exec \
  && cd /tmp/su-exec \
