@@ -167,7 +167,7 @@ For an installation with multiple nodes you can also set:
 
 ### Elasticsearch
 
--   `ELASTICSEARCH_SERVER_HOST` **Required**<br>
+-   `ELASTICSEARCH_SERVER_HOST` **Required for `allinone`, `develop` and `admin`**<br>
     Hostname to Elasticsearch.
 -   `ELASTICSEARCH_SERVER_SCHEME` Optional<br>
     Protocol to use when accessing Elasticsearch. Either `http` or `https`. The default is `http`.
@@ -177,13 +177,15 @@ For an installation with multiple nodes you can also set:
     Username to use when accessing Elasticsearch. The default is none.
 -   `ELASTICSEARCH_PASSWORD` Optional<br>
     Password to use when accessing Elasticsearch. The default is none.
+-   `NUMBER_OF_TIMES_TRYING_TO_CONNECT_TO_ELASTICSEARCH` Optional<br>
+    Specifies how often Opencast is going to try to establish a TCP connection to the specified Elasticsearch cluster before giving up. The waiting time between tries is 5 seconds. The default number of tries is 25.  Setting this to 0 skips the check.
 
 ### Database
 
 -   `ORG_OPENCASTPROJECT_DB_VENDOR` Optional<br>
     The type of database to use. Currently, you can set this to either `H2`, `MariaDB`, or `PostgreSQL`. The default is `H2`.
--   `NUMER_OF_TIMES_TRYING_TO_CONNECT_TO_DB` Optional<br>
-    Specifies how often Opencast is going to try to connect to the specified database before giving up. The waiting time between tries is 5 seconds. The default number of tries is 25. This configuration only applies if the database is not H2.
+-   `NUMBER_OF_TIMES_TRYING_TO_CONNECT_TO_DB` Optional<br>
+    Specifies how often Opencast is going to try to connect to the specified database before giving up. The waiting time between tries is 5 seconds. The default number of tries is 25. This configuration only applies if the database is not H2. Setting this to 0 skips the check.
 
 #### H2
 
