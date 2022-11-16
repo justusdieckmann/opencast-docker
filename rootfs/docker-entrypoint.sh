@@ -40,7 +40,9 @@ opencast_main_check() {
   echo "Run opencast_main_check"
 
   opencast_opencast_check
-  opencast_elasticsearch_check
+  if opencast_helper_dist_allinone || opencast_helper_dist_develop || opencast_helper_dist_admin; then
+    opencast_elasticsearch_check
+  fi
   opencast_db_check
 }
 
@@ -94,8 +96,12 @@ opencast_main_sync_config() {
 
 opencast_main_watch_customconfig_job() {
   while true; do
-    opencast_helper_customconfig_wait_for_change
-    opencast_main_sync_config
+    if opencast_helper_customconfig; then
+      opencast_helper_customconfig_wait_for_change
+      opencast_main_sync_config
+    else
+      sleep 60
+    fi
   done
 }
 
@@ -108,12 +114,12 @@ opencast_main_start() {
   # processes are running. We therefore can just clean up the old pid file.
   rm -rf /opencast/data/pid /opencast/instances/instance.properties
 
+  opencast_main_watch_customconfig_job &
+  export OC_WATCH_CUSTOM_CONFIG_PID=$!
+
   if opencast_helper_dist_develop; then
     exec su-exec "${OPENCAST_USER}":"${OPENCAST_GROUP}" bin/start-opencast debug
   fi
-
-  opencast_main_watch_customconfig_job &
-  export OC_WATCH_CUSTOM_CONFIG_PID=$!
 
   su-exec "${OPENCAST_USER}":"${OPENCAST_GROUP}" bin/start-opencast daemon &
   OC_PID=$!
@@ -145,6 +151,9 @@ case ${1} in
   app:start)
     opencast_main_init
     opencast_db_trytoconnect
+    if opencast_helper_dist_allinone || opencast_helper_dist_develop || opencast_helper_dist_admin; then
+      opencast_elasticsearch_trytoconnect
+    fi
     opencast_main_start
     ;;
   app:help)

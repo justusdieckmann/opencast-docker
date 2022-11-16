@@ -21,6 +21,7 @@ FFMPEG_VERSION    ?= $(shell cat VERSION_FFMPEG)
 
 IMAGE_REGISTRY    ?= quay.io/opencast
 IMAGE_TAG         ?= $(shell cat VERSION)
+IMAGE_TAG_MAJOR   ?= $(shell cat VERSION_MAJOR)
 DOCKER_BUILD_ARGS ?=
 
 GIT_COMMIT        ?= $(shell git rev-parse --short HEAD || echo "unknown")
@@ -49,11 +50,13 @@ build-%:
 		--build-arg OPENCAST_REPO="$(OPENCAST_REPO)" \
 		--build-arg OPENCAST_VERSION="$(OPENCAST_VERSION)" \
 		--build-arg OPENCAST_DISTRIBUTION="$*" \
+		--build-arg FFMPEG_VERSION="$(FFMPEG_VERSION)" \
 		--build-arg BUILD_DATE="$(BUILD_DATE)" \
 		--build-arg GIT_COMMIT="$(GIT_COMMIT)" \
 		--build-arg VERSION="$(IMAGE_TAG)" \
 		-t "$(IMAGE_REGISTRY)/$*:latest" \
 		-t "$(IMAGE_REGISTRY)/$*:$(IMAGE_TAG)" \
+		-t "$(IMAGE_REGISTRY)/$*:$(IMAGE_TAG_MAJOR)" \
 		$(DOCKER_BUILD_ARGS) \
 		-f Dockerfile \
 		.
@@ -63,11 +66,13 @@ build-build:
 		--pull \
 		--build-arg OPENCAST_REPO="$(OPENCAST_REPO)" \
 		--build-arg OPENCAST_VERSION="$(OPENCAST_VERSION)" \
+		--build-arg FFMPEG_VERSION="$(FFMPEG_VERSION)" \
 		--build-arg BUILD_DATE="$(BUILD_DATE)" \
 		--build-arg GIT_COMMIT="$(GIT_COMMIT)" \
 		--build-arg VERSION="$(IMAGE_TAG)" \
 		-t "$(IMAGE_REGISTRY)/build:latest" \
 		-t "$(IMAGE_REGISTRY)/build:$(IMAGE_TAG)" \
+		-t "$(IMAGE_REGISTRY)/build:$(IMAGE_TAG_MAJOR)" \
 		$(DOCKER_BUILD_ARGS) \
 		-f Dockerfile-build \
 		.
@@ -77,6 +82,7 @@ clean: $(addprefix clean-, $(OPENCAST_DISTRIBUTIONS)) clean-build
 clean-%:
 	-docker rmi $(IMAGE_REGISTRY)/$*
 	-docker rmi $(IMAGE_REGISTRY)/$*:$(IMAGE_TAG)
+	-docker rmi $(IMAGE_REGISTRY)/$*:$(IMAGE_TAG_MAJOR)
 
 lint:
 	cd rootfs                     && shellcheck --external-sources *.sh ./opencast/docker/scripts/*.sh

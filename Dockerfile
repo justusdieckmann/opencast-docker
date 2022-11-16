@@ -87,7 +87,6 @@ ENV OPENCAST_HOME="/opencast" \
     OPENCAST_GID="800"
 ENV OPENCAST_CONFIG="${OPENCAST_HOME}/etc" \
     OPENCAST_SCRIPTS="${OPENCAST_HOME}/docker/scripts" \
-    OPENCAST_SUPPORT="${OPENCAST_HOME}/docker/support" \
     OPENCAST_STAGE_BASE_HOME="${OPENCAST_HOME}/docker/stage/base" \
     OPENCAST_STAGE_OUT_HOME="${OPENCAST_HOME}/docker/stage/out"
 
@@ -114,14 +113,17 @@ RUN apt-get update \
       inotify-tools \
       jq \
       netcat-openbsd \
-      nfs-common \
       openssl \
+      python3 \
+      python3-pip \
       rsync \
       sox \
       synfig \
       tesseract-ocr \
       tesseract-ocr-eng \
       tzdata \
+ && pip install \
+      vosk-cli \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /usr/local/sbin/su-exec /usr/local/sbin/

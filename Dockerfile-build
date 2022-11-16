@@ -50,7 +50,6 @@ ENV OPENCAST_REPO="${OPENCAST_REPO}" \
     OPENCAST_BUILD_ASSETS="/docker"
 ENV OPENCAST_CONFIG="${OPENCAST_HOME}/etc" \
     OPENCAST_SCRIPTS="${OPENCAST_HOME}/docker/scripts" \
-    OPENCAST_SUPPORT="${OPENCAST_HOME}/docker/support" \
     OPENCAST_STAGE_BASE_HOME="${OPENCAST_HOME}/docker/stage/base" \
     OPENCAST_STAGE_OUT_HOME="${OPENCAST_HOME}/docker/stage/out"
 ENV ORG_OPENCASTPROJECT_SECURITY_ADMIN_USER="admin" \
@@ -90,14 +89,17 @@ RUN apt-get update \
       inotify-tools \
       jq \
       netcat-openbsd \
-      nfs-common \
       openssl \
+      python3 \
+      python3-pip \
       rsync \
       sox \
       synfig \
       tesseract-ocr \
       tesseract-ocr-eng \
       tzdata \
+ && pip install \
+      vosk-cli \
   \
  && sudo ln -s /usr/local/openjdk*/bin/* /usr/local/bin/ \
   \
