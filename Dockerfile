@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM --platform=${BUILDPLATFORM} docker.io/alpine:edge AS build-ffmpeg
+FROM --platform=${BUILDPLATFORM} docker.io/library/alpine:edge AS build-ffmpeg
 ARG TARGETARCH
 ARG FFMPEG_VERSION="release"
 RUN apk add --no-cache \
@@ -27,7 +27,7 @@ RUN apk add --no-cache \
  && mv ff* /usr/local/bin
 
 
-FROM docker.io/eclipse-temurin:17-jdk AS build-whisper-cpp
+FROM docker.io/library/eclipse-temurin:17-jdk AS build-whisper-cpp
 ARG WHISPER_CPP_VERSION="master"
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -49,7 +49,7 @@ RUN mkdir -p out \
  && mv models/download-ggml-model.sh out/whisper.cpp-model-download
 
 
-FROM --platform=${BUILDPLATFORM} docker.io/maven:3-eclipse-temurin-17 AS build-opencast
+FROM --platform=${BUILDPLATFORM} docker.io/library/eclipse-temurin:17-jdk AS build-opencast
 
 ARG OPENCAST_REPO="https://github.com/opencast/opencast.git"
 ARG OPENCAST_VERSION="develop"
@@ -90,7 +90,7 @@ ARG OPENCAST_DISTRIBUTION
 RUN tar -xzf build/opencast-dist-${OPENCAST_DISTRIBUTION}-*.tar.gz --strip 1 -C "${OPENCAST_HOME}"
 
 
-FROM docker.io/eclipse-temurin:17-jdk
+FROM docker.io/library/eclipse-temurin:17-jdk
 LABEL org.opencontainers.image.base.name="docker.io/eclipse-temurin:17-jdk"
 
 ENV OPENCAST_HOME="/opencast" \
