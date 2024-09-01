@@ -41,6 +41,13 @@ services:
       ORG_OPENCASTPROJECT_SECURITY_DIGEST_PASS: CHANGE_ME
       ELASTICSEARCH_SERVER_HOST: opensearch
     ports:
-      - "8080:8080"
+      - "8080"
     volumes:
       - data:/data
+      - type: bind
+        source: ./../etc
+        target: /etc/opencast
+  corsproxy:
+    build: corsproxy
+    ports:
+      - "8080:8080"
